@@ -1,1 +1,1 @@
-models/house.pkl filter=lfs diff=lfs merge=lfs -text
+backend/models/house.pkl filter=lfs diff=lfs merge=lfs -text

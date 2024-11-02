@@ -1,9 +1,26 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 function PredictionChart({ data }) {
-  // Sample data format: { labels: ['Label1', 'Label2'], values: [100, 200] }
-
   const chartData = {
     labels: data.labels,
     datasets: [
