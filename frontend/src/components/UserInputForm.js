@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 function UserInputForm({ onSubmit }) {
   const [formData, setFormData] = useState({
     rooms: '',
-    location: '',
+    postcode: '',
     houseType: '',
     bathroom: '',
     car: '',
@@ -15,7 +15,7 @@ function UserInputForm({ onSubmit }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: value.trim() }); // Trimmed input values
   };
 
   const handleSubmit = async (e) => {
@@ -48,20 +48,16 @@ function UserInputForm({ onSubmit }) {
 
     try {
       // Pass the data up to the parent component
-      if (typeof onSubmit === 'function') {
-        onSubmit({
-          rooms: parseInt(formData.rooms),
-          location: formData.location,
-          bathroom: parseInt(formData.bathroom),
-          car: parseInt(formData.car),
-          landsize: parseFloat(formData.landsize),
-          year: parseInt(formData.year),
-          houseType: formData.houseType,
-        });
-      } else {
-        console.error('onSubmit prop is not a function');
-        setError('Internal error: Form submission handler is not properly configured.');
-      }
+      console.log(formData);
+      onSubmit({
+        Rooms: parseInt(formData.rooms),
+        Postcode: formData.postcode.trim(), // Ensure trimmed input
+        Bathroom: parseInt(formData.bathroom),
+        Car: parseInt(formData.car),
+        Landsize: parseFloat(formData.landsize),
+        Year: parseInt(formData.year),
+        Type: formData.houseType,
+      });
     } catch (error) {
       console.error('Error submitting form:', error);
       setError('Failed to submit the form. Please check your input and try again.');
@@ -73,16 +69,32 @@ function UserInputForm({ onSubmit }) {
   return (
     <form onSubmit={handleSubmit} className="form-container">
       <div>
-        <label>Number of Rooms:</label>
-        <input type="number" name="rooms" value={formData.rooms} onChange={handleChange} required />
+        <label htmlFor="rooms">Number of Rooms:</label>
+        <input
+          type="number"
+          id="rooms"
+          name="rooms"
+          value={formData.rooms}
+          onChange={handleChange}
+          required
+          placeholder="e.g., 3"
+        />
       </div>
       <div>
-        <label>Location:</label>
-        <input type="text" name="location" value={formData.location} onChange={handleChange} required />
+        <label htmlFor="postcode">Postcode:</label>
+        <input
+          type="text"
+          id="postcode"
+          name="postcode"
+          value={formData.postcode}
+          onChange={handleChange}
+          required
+          placeholder="e.g., 3000"
+        />
       </div>
       <div>
-        <label>House Type:</label>
-        <select name="houseType" value={formData.houseType} onChange={handleChange} required>
+        <label htmlFor="houseType">House Type:</label>
+        <select id="houseType" name="houseType" value={formData.houseType} onChange={handleChange} required>
           <option value="">Select Type</option>
           <option value="h">House</option>
           <option value="u">Unit</option>
@@ -90,20 +102,52 @@ function UserInputForm({ onSubmit }) {
         </select>
       </div>
       <div>
-        <label>Number of Bathrooms:</label>
-        <input type="number" name="bathroom" value={formData.bathroom} onChange={handleChange} required />
+        <label htmlFor="bathroom">Number of Bathrooms:</label>
+        <input
+          type="number"
+          id="bathroom"
+          name="bathroom"
+          value={formData.bathroom}
+          onChange={handleChange}
+          required
+          placeholder="e.g., 2"
+        />
       </div>
       <div>
-        <label>Number of Car Spaces:</label>
-        <input type="number" name="car" value={formData.car} onChange={handleChange} required />
+        <label htmlFor="car">Number of Car Spaces:</label>
+        <input
+          type="number"
+          id="car"
+          name="car"
+          value={formData.car}
+          onChange={handleChange}
+          required
+          placeholder="e.g., 1"
+        />
       </div>
       <div>
-        <label>Landsize (sq m):</label>
-        <input type="number" name="landsize" value={formData.landsize} onChange={handleChange} required />
+        <label htmlFor="landsize">Landsize (sq m):</label>
+        <input
+          type="number"
+          id="landsize"
+          name="landsize"
+          value={formData.landsize}
+          onChange={handleChange}
+          required
+          placeholder="e.g., 500"
+        />
       </div>
       <div>
-        <label>Year:</label>
-        <input type="number" name="year" value={formData.year} onChange={handleChange} required />
+        <label htmlFor="year">Year:</label>
+        <input
+          type="number"
+          id="year"
+          name="year"
+          value={formData.year}
+          onChange={handleChange}
+          required
+          placeholder="e.g., 2025"
+        />
       </div>
       <button type="submit" className="submit-button" disabled={isLoading}>
         {isLoading ? 'Submitting...' : 'Submit'}

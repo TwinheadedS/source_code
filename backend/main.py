@@ -36,6 +36,13 @@ class PredictionRequest(BaseModel):
 @app.post("/predict")
 async def predict(request: PredictionRequest):
     try:
+
+        # Print or log the incoming request data
+        print("Received request data:",
+              request.dict())  # Simple print statement
+        logging.info(
+            f"Received request data: {request.dict()}")  # Logging statement
+
         # Map the request data to the format expected by house_prediction.py
         features_to_predict = {
             'Rooms': request.Rooms,
