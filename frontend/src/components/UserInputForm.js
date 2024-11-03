@@ -21,12 +21,12 @@ function UserInputForm({ onSubmit }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic client-side validation
+    // Enhanced client-side validation
     if (!formData.rooms || parseInt(formData.rooms) <= 0) {
       setError('Please enter a valid number of rooms.');
       return;
     }
-    if (!formData.bathroom || parseInt(formData.bathroom) <= 0) {
+    if (!formData.bathroom || parseInt(formData.bathroom) < 0) {
       setError('Please enter a valid number of bathrooms.');
       return;
     }
@@ -38,8 +38,12 @@ function UserInputForm({ onSubmit }) {
       setError('Please enter a valid landsize.');
       return;
     }
-    if (!formData.year || parseInt(formData.year) < 1900) {
-      setError('Please enter a valid year.');
+    if (!formData.year || parseInt(formData.year) < new Date().getFullYear() || parseInt(formData.year) > new Date().getFullYear() + 100) {
+      setError('Please enter a valid year (up to 100 years from now and not less the current date).');
+      return;
+    }
+    if (!/^[0-9]{4}$/.test(formData.postcode)) {
+      setError('Please enter a valid 4-digit postcode.');
       return;
     }
 
@@ -58,6 +62,16 @@ function UserInputForm({ onSubmit }) {
         Year: parseInt(formData.year),
         Type: formData.houseType,
       });
+      // Clear form on success
+      setFormData({
+        rooms: '',
+        postcode: '',
+        houseType: '',
+        bathroom: '',
+        car: '',
+        landsize: '',
+        year: '',
+      });
     } catch (error) {
       console.error('Error submitting form:', error);
       setError('Failed to submit the form. Please check your input and try again.');
@@ -67,7 +81,7 @@ function UserInputForm({ onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-container">
+    <form onSubmit={handleSubmit} className="form-container" aria-live="polite">
       <div>
         <label htmlFor="rooms">Number of Rooms:</label>
         <input
@@ -149,7 +163,7 @@ function UserInputForm({ onSubmit }) {
           placeholder="e.g., 2025"
         />
       </div>
-      <button type="submit" className="submit-button" disabled={isLoading}>
+      <button type="submit" className="submit-button" disabled={isLoading} aria-busy={isLoading} aria-live="assertive">
         {isLoading ? 'Submitting...' : 'Submit'}
       </button>
       {error && <p className="error-text" style={{ color: 'red' }}>{error}</p>}
