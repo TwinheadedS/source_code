@@ -1,0 +1,278 @@
+/* General container styling */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+h2 {
+  color: #444;
+  margin-top: 30px;
+}
+
+/* Form container styling */
+.form-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 400px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.form-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+
+input:focus, select:focus {
+  border-color: #007BFF;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+  transform: scale(1.02);
+}
+
+input:focus::placeholder {
+  color: #007BFF;
+  opacity: 0.8;
+}
+
+input:hover, select:hover {
+  border-color: #0056b3;
+}
+
+input[type="text"] {
+  animation: inputBounce 0.2s ease-in-out;
+}
+
+@keyframes inputBounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.01);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Button styling */
+.submit-button {
+  background-color: #007BFF;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-3px);
+}
+
+.submit-button:active {
+  transform: translateY(1px);
+}
+
+/* Error message styling */
+.error-text {
+  color: #d9534f;
+  font-weight: 500;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+/* Prediction results container */
+.prediction-results {
+  background-color: #eaf7ff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.metrics {
+  text-align: left;
+  margin-top: 15px;
+  color: #333;
+}
+
+.metrics p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* Placeholder and introductory styling */
+.placeholder {
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 800px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.intro-text {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #555;
+  text-align: center;
+  max-width: 800px;
+}
+
+/* Transitions for the result sections */
+.chart-container, .metrics-container {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.chart-container.show, .metrics-container.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Loading animation */
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007BFF;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.form-section {
+  flex: 1;
+  max-width: 350px;
+  margin-right: 40px;
+}
+
+.result-section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+.chart-container {
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.metrics-container {
+  margin-top: 20px;
+  background-color: #f0f9ff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+}
+
+.metrics-container h2 {
+  margin-bottom: 15px;
+  color: #007BFF;
+}
+
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.metric-label {
+  font-weight: bold;
+  color: #333;
+}
+
+.metric-value {
+  color: #0056b3;
+}
+
+/* Styling for placeholder animation */
+.placeholder-text {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}

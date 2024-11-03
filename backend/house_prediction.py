@@ -175,25 +175,23 @@ def preprocess_house_data(path):
 
 
 def get_metrics(y_true, y_pred):
-    # Mean Squared Error (MSE)
+    # Calculate the metrics
     mse = mean_squared_error(y_true, y_pred)
-    print(f"Mean Squared Error (MSE): {mse}")
-
-    # Root Mean Squared Error (RMSE)
     rmse = np.sqrt(mse)
-    print(f"Root Mean Squared Error (RMSE): {rmse}")
-
-    # Mean Absolute Error (MAE)
     mae = mean_absolute_error(y_true, y_pred)
-    print(f"Mean Absolute Error (MAE): {mae}")
-
-    # R-squared (R²)
     r2 = r2_score(y_pred=y_pred, y_true=y_true)
+
+    # Print the metrics (useful for debugging and logs)
+    print(f"Mean Squared Error (MSE): {mse}")
+    print(f"Root Mean Squared Error (RMSE): {rmse}")
+    print(f"Mean Absolute Error (MAE): {mae}")
     print(f"R-squared (R²): {r2}")
+
+    # Return the metrics
+    return mse, rmse, mae, r2
 
 
 def train_house_model(house_stud_df, metrics):
-
     house_X = house_stud_df.drop(columns=['Price'])
     house_y = house_stud_df["Price"]
 
@@ -206,11 +204,15 @@ def train_house_model(house_stud_df, metrics):
     rvr_house.fit(X_train, y_train)
     y_pred = rvr_house.predict(X_valid)
 
-    if metrics:
-        get_metrics(y_valid, y_pred)
-
+    # Save the trained model
     with open('./models/house.pkl', 'wb') as f:
         pickle.dump(rvr_house, f)
+
+    if metrics:
+        mse, rmse, mae, r2 = get_metrics(y_valid, y_pred)
+        return mse, rmse, mae, r2
+
+    return None, None, None, None
 
 
 def predict_house(features, plot, metrics):
@@ -233,7 +235,9 @@ def predict_house(features, plot, metrics):
                               plot=plot,
                               target=target)
     house_stud_df, house_scaler = preprocess_house_data(HOUSE_PATH)
-    train_house_model(house_stud_df, metrics)
+
+    # Train the model and get metrics
+    mse, rmse, mae, r2 = train_house_model(house_stud_df, metrics)
 
     pred_features = pd.DataFrame({
         'Rooms': [features['Rooms']],
@@ -273,7 +277,7 @@ def predict_house(features, plot, metrics):
 
     house_pred = rvr_house.predict(pred_features)
 
-    return house_pred
+    return house_pred, mse, rmse, mae, r2
 
 
 features_to_predict = {
@@ -286,6 +290,6 @@ features_to_predict = {
     'Type': 'h',
 }
 
-predicted_price = predict_house(features_to_predict, plot=True, metrics=True)
+predicted_price = predict_house(features_to_predict, plot=False, metrics=True)
 
-print(f"\nThe predicted price is : ${predicted_price[0]:.2f}\n")
+print(f"\nThe predicted price is : ${float(predicted_price[0]):.2f}\n")

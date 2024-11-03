@@ -55,12 +55,17 @@ async def predict(request: PredictionRequest):
         }
 
         # Call the predict_house function and get the result
-        predicted_price = predict_house(features_to_predict,
-                                        plot=False,
-                                        metrics=False)
+        predicted_price, mse, rmse, mae, r2 = predict_house(
+            features_to_predict, plot=False, metrics=True)
         logging.info(f"Predicted house price: {predicted_price}")
 
-        return {"predicted_price": float(predicted_price)}
+        return {
+            "predicted_price": float(predicted_price),
+            "mse": mse,
+            "rmse": rmse,
+            "mae": mae,
+            "r2": r2
+        }
     except Exception as e:
         logging.error(f"Error during prediction: {e}")
         raise HTTPException(
