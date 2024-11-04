@@ -64,27 +64,44 @@ def plot_result(true_X, true_y, X_pred, y_pred):
     plt.show()
 
 
-def create_student_prediction(student_df, scaler, target, plot=False):
-    '''
-    
-    '''
+def create_student_prediction(student_df,
+                              scaler,
+                              target,
+                              plot=False,
+                              return_per_year=False):
+    """
+    Generate predictions for the number of international students for each year up to the target year.
+    Train the model using past data and append generated predictions dynamically.
+    """
+    # Initial training data
     stud_X = student_df[["year"]]
     stud_y = student_df["count_normalized"]
 
     new_X = stud_X.copy()
     new_y = stud_y.copy()
 
-    svr_model = SVR()
+    yearly_predictions = {}
 
-    for i in range(NOW, target + 1):
-
-        pred = pd.DataFrame({'year': [i]})
-
+    for i in range(NOW + 1, target +
+                   1):  # Start from the year after the last available year
+        # Train the model on all data up to the current prediction year
+        svr_model = SVR()
         svr_model.fit(new_X, new_y)
+
+        # Prepare prediction for the current year
+        pred = pd.DataFrame({'year': [i]})
         y_pred = svr_model.predict(pred)
+
+        # Append the prediction to the training set for use in future years
         new_X.loc[len(new_X)] = [i]
         new_y.loc[len(new_y)] = y_pred
 
+        # Collect the inverse-transformed prediction for the current year
+        if return_per_year:
+            yearly_predictions[i] = scaler.inverse_transform([[y_pred[0]]
+                                                              ])[0][0]
+
+    # Generate the final output for plotting or returning
     unscaled_y = scaler.inverse_transform([stud_y]).ravel()
     unscaled_y_pred = scaler.inverse_transform([new_y]).ravel()
 
@@ -96,10 +113,14 @@ def create_student_prediction(student_df, scaler, target, plot=False):
         "number_of_students": unscaled_y_pred
     })
 
+    # Save predictions to CSV for use in house data processing
     result_df.to_csv(PREDICTION_PATH, index=False)
 
-    with open('./models/student.pkl', 'wb') as f:
-        pickle.dump(svr_model, f)
+    # # Save the model if needed
+    # with open('./models/student.pkl', 'wb') as f:
+    #     pickle.dump(svr_model, f)
+
+    return yearly_predictions if return_per_year else None
 
 
 def preprocess_house_data(path):
@@ -191,9 +212,13 @@ def get_metrics(y_true, y_pred):
     return mse, rmse, mae, r2
 
 
-def train_house_model(house_stud_df, metrics):
-    house_X = house_stud_df.drop(columns=['Price'])
-    house_y = house_stud_df["Price"]
+def train_house_model(house_stud_df, target_year, metrics=False):
+    # Filter the data up to the target year
+    house_stud_df_filtered = house_stud_df[house_stud_df['Year'] <=
+                                           target_year]
+
+    house_X = house_stud_df_filtered.drop(columns=['Price'])
+    house_y = house_stud_df_filtered["Price"]
 
     X_train, X_valid, y_train, y_valid = train_test_split(house_X,
                                                           house_y,
@@ -204,22 +229,22 @@ def train_house_model(house_stud_df, metrics):
     rvr_house.fit(X_train, y_train)
     y_pred = rvr_house.predict(X_valid)
 
-    # Save the trained model
-    with open('./models/house.pkl', 'wb') as f:
-        pickle.dump(rvr_house, f)
+    # # Save the trained model (optional if not needed for future use)
+    # with open(f'./models/house_{target_year}.pkl', 'wb') as f:
+    #     pickle.dump(rvr_house, f)
 
     if metrics:
         mse, rmse, mae, r2 = get_metrics(y_valid, y_pred)
-        return mse, rmse, mae, r2
+        return rvr_house, mse, rmse, mae, r2
 
-    return None, None, None, None
+    return rvr_house, None, None, None, None
 
 
-def predict_house(features, plot, metrics):
-    '''
-    For predicting a single house price based on user's own features
-    '''
-
+def predict_house(features, plot=False, metrics=False, end_year=None):
+    """
+    Predict house prices for a single year or multiple years based on user's own features.
+    If end_year is provided, it will predict for the range from features['Year'] to end_year.
+    """
     # Validate the type
     valid_types = ['h', 'u', 't']
     if features['Type'] not in valid_types:
@@ -227,57 +252,69 @@ def predict_house(features, plot, metrics):
             f"Invalid property type '{features['Type']}'. Expected one of {valid_types}."
         )
 
-    target = features['Year']
+    # Determine the prediction range
+    start_year = features['Year']
+    prediction_years = [start_year] if end_year is None else list(
+        range(start_year, end_year + 1))
 
+    # Preprocess student data and create predictions up to the max year
+    max_year = max(prediction_years)
     student_data, student_scaler = preprocess_student_data(STUDENT_PATH)
-    create_student_prediction(student_data,
-                              student_scaler,
-                              plot=plot,
-                              target=target)
+    student_predictions = create_student_prediction(student_data,
+                                                    student_scaler,
+                                                    target=max_year,
+                                                    plot=plot,
+                                                    return_per_year=True)
+
     house_stud_df, house_scaler = preprocess_house_data(HOUSE_PATH)
 
-    # Train the model and get metrics
-    mse, rmse, mae, r2 = train_house_model(house_stud_df, metrics)
+    # Prepare predictions for each year in the prediction range
+    predicted_prices = []
+    for year in prediction_years:
+        # Train a model specific to the target year
+        rvr_house, mse, rmse, mae, r2 = train_house_model(house_stud_df,
+                                                          target_year=year,
+                                                          metrics=metrics)
 
-    pred_features = pd.DataFrame({
-        'Rooms': [features['Rooms']],
-        'Postcode': [features['Postcode']],
-        'Bathroom': [features['Bathroom']],
-        'Car': [features['Car']],
-        'Landsize': [features['Landsize']],
-        'Year': [features['Year']],
-        'Type_h': [False],
-        'Type_t': [False],
-        'Type_u': [False],
-    })
+        # Prepare features for the target year
+        pred_features = pd.DataFrame({
+            'Rooms': [features['Rooms']],
+            'Postcode': [features['Postcode']],
+            'Bathroom': [features['Bathroom']],
+            'Car': [features['Car']],
+            'Landsize': [features['Landsize']],
+            'Year': [year],
+            'Type_h': [features['Type'] == 'h'],
+            'Type_t': [features['Type'] == 't'],
+            'Type_u': [features['Type'] == 'u'],
+        })
 
-    # Set the appropriate one-hot encoded type
-    if features['Type'] == 'h':
-        pred_features['Type_h'] = [True]
-    elif features['Type'] == 'u':
-        pred_features['Type_u'] = [True]
-    elif features['Type'] == 't':
-        pred_features['Type_t'] = [True]
+        # Integrate the student data for the specific year
+        pred_features['number_of_students'] = [
+            student_predictions[year] if year in student_predictions else 0
+        ]
 
-    pred_student = pd.read_csv(PREDICTION_PATH)
+        # Normalize the prediction features
+        columns_to_normalize = [
+            'Rooms', 'Bathroom', 'Car', 'Landsize', 'Year',
+            'number_of_students'
+        ]
+        pred_features[columns_to_normalize] = house_scaler.transform(
+            pred_features[columns_to_normalize])
 
-    pred_features['number_of_students'] = [
-        pred_student.loc[pred_student['year'] == features['Year'],
-                         'number_of_students'].values[0]
-    ]
+        print(
+            f"[DEBUG] Multi-Year Prediction - Year {year} - pred_features:\n",
+            pred_features)
 
-    with open('./models/house.pkl', 'rb') as f:
-        rvr_house = pickle.load(f)
+        # Predict using the model for the current year
+        house_pred = rvr_house.predict(pred_features)
+        predicted_prices.append(house_pred[0])
 
-    columns_to_normalize = [
-        'Rooms', 'Bathroom', 'Car', 'Landsize', 'Year', 'number_of_students'
-    ]
-    pred_features[columns_to_normalize] = house_scaler.transform(
-        pred_features[columns_to_normalize])
-
-    house_pred = rvr_house.predict(pred_features)
-
-    return house_pred, mse, rmse, mae, r2
+    # Return results for single or multi-year predictions
+    if end_year is None:
+        return predicted_prices[0], mse, rmse, mae, r2
+    else:
+        return prediction_years, predicted_prices, student_predictions, mse, rmse, mae, r2
 
 
 features_to_predict = {

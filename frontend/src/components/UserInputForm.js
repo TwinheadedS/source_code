@@ -51,17 +51,19 @@ function UserInputForm({ onSubmit }) {
     setIsLoading(true);
 
     try {
-      // Pass the data up to the parent component
-      console.log(formData);
-      onSubmit({
+      const formattedData = {
         Rooms: parseInt(formData.rooms),
-        Postcode: formData.postcode.trim(), // Ensure trimmed input
+        Postcode: formData.postcode.trim(),
         Bathroom: parseInt(formData.bathroom),
         Car: parseInt(formData.car),
         Landsize: parseFloat(formData.landsize),
         Year: parseInt(formData.year),
         Type: formData.houseType,
-      });
+      };
+  
+      console.log('Payload being sent:', formattedData);
+      onSubmit(formattedData); // Ensure this call matches the expected back-end request
+
       // Clear form on success
       setFormData({
         rooms: '',
