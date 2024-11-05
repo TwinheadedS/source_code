@@ -71,7 +71,7 @@ cd backend
 
 1. Install the required libraries:
    ```bash
-   pip install -r ../requirements.txt
+   pip install -r requirements.txt
    ```
 
 ### 3. Setting Up the Front-End (React)
