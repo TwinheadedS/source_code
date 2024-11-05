@@ -93,6 +93,28 @@ The API may return the following error responses:
 | `400`       | Bad request - invalid input parameters | `{"detail": "Landsize must be positive."}`    |
 | `500`       | Internal Server Error                  | `{"detail": "An internal error occurred."}`   |
 
+### 2. `/status` - GET
+
+This endpoint checks the status of the API to ensure it is running.
+
+#### Request
+
+- **Method**: GET
+- **URL**: `/status`
+
+#### Response
+
+Returns a JSON object with the API status message.
+
+##### Example Response
+
+```json
+{
+  "status": "API is running"
+}
+```
+
+
 ### Error Handling
 
 - **Invalid Input**: If any input parameters are outside the specified constraints (e.g., `Landsize` is non-positive or `Year` is out of range), the API returns a `400` status with a descriptive error message.
