@@ -3,6 +3,7 @@ import UserInputForm from './components/UserInputForm';
 import PredictionChart from './components/PredictionChart';
 import MultiYearPredictionChart from './components/MultiYearPredictionChart';
 import StudentPredictionChart from './components/StudentPredictionChart';
+import MLTrainingLoader from './components/MLTrainingLoader';
 import './styles/style.css';
 
 function App() {
@@ -11,7 +12,7 @@ function App() {
   const [studentData, setStudentData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [submittedData, setSubmittedData] = useState(null); // State to hold submitted form data
+  const [submittedData, setSubmittedData] = useState(null);
 
   const handleFormSubmit = async (formData) => {
     setLoading(true);
@@ -60,61 +61,69 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1>Victoria Housing Market Prediction App</h1>
-      <div className="intro-text">
-        <p>
-          Welcome to the Victoria Housing Market Prediction App. Enter the details below to get a price prediction along with a forecast for the next 5 years and the number of predicted students that affected the housing price.
-        </p>
-      </div>
+      <h1>{submittedData ? "Predicted Results" : "Victoria Housing Market Prediction App"}</h1>
 
-      {submittedData ? (
-        // Display submitted data and a reset button
-        <div className="summary-section">
-          <h2>Search Summary</h2>
-          <ul>
-            <li><strong>Rooms:</strong> {submittedData.Rooms}</li>
-            <li><strong>Postcode:</strong> {submittedData.Postcode}</li>
-            <li><strong>House Type:</strong> {submittedData.Type}</li>
-            <li><strong>Bathrooms:</strong> {submittedData.Bathroom}</li>
-            <li><strong>Car Spaces:</strong> {submittedData.Car}</li>
-            <li><strong>Landsize (sq m):</strong> {submittedData.Landsize}</li>
-            <li><strong>Year:</strong> {submittedData.Year}</li>
-          </ul>
-          <button className="reset-button" onClick={handleReset}>New Search</button>
-        </div>
-      ) : (
-        // Show the form if no data has been submitted
-        <div className="form-section">
-          <UserInputForm onSubmit={handleFormSubmit} />
+      {!submittedData && (
+        <div className="intro-text">
+          <p>
+            Welcome to the Victoria Housing Market Prediction App. Enter the details below to get a price prediction along with a forecast for the next 5 years and the number of predicted students that affected the housing price.
+          </p>
         </div>
       )}
 
-      <div className="result-section">
-        {loading ? (
-          <div className="loading-spinner"></div>
+      <div className="main-content">
+        {submittedData ? (
+          <aside className="sidebar">
+            <h2>Search Summary</h2>
+            <ul>
+              <li><strong>Rooms:</strong> {submittedData.Rooms}</li>
+              <li><strong>Postcode:</strong> {submittedData.Postcode}</li>
+              <li><strong>House Type:</strong> {submittedData.Type}</li>
+              <li><strong>Bathrooms:</strong> {submittedData.Bathroom}</li>
+              <li><strong>Car Spaces:</strong> {submittedData.Car}</li>
+              <li><strong>Landsize (sq m):</strong> {submittedData.Landsize}</li>
+              <li><strong>Year:</strong> {submittedData.Year}</li>
+            </ul>
+            <button className="reset-button" onClick={handleReset}>New Search</button>
+          </aside>
         ) : (
-          <>
-            {predictionData && (
-              <div className="chart-container show">
-                <h2>Prediction Results for Predicted Price</h2>
-                <PredictionChart data={predictionData} />
-              </div>
-            )}
-            {multiYearData && (
-              <div className="chart-container show">
-                <h2>5-Year Prediction Forecast</h2>
-                <MultiYearPredictionChart data={multiYearData} />
-              </div>
-            )}
-            {studentData && (
-              <div className="chart-container show">
-                <h2>Predicted Number of International Students Over the Years</h2>
-                <StudentPredictionChart data={studentData} />
-              </div>
-            )}
-          </>
+          // Show the form if no data has been submitted
+          <div className="form-section">
+            <UserInputForm onSubmit={handleFormSubmit} />
+          </div>
         )}
+
+        <div className="result-section">
+          {loading ? (<MLTrainingLoader />
+          ) : (
+            <>
+              {predictionData && (
+                <div className="chart-container show">
+                  <h2>Predicted Price Results for {submittedData.Year}</h2>
+                  <PredictionChart data={predictionData} />
+                </div>
+              )}
+              {multiYearData && (
+                <div className="chart-container show">
+                  <h2>5-Year Prediction Forecast</h2>
+                  <MultiYearPredictionChart data={multiYearData} />
+                </div>
+              )}
+              {studentData && (
+                <div className="chart-container show">
+                  <h2>Predicted Number of International Students Over the Years</h2>
+                  <StudentPredictionChart data={studentData} />
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
+
+      {/* Footer */}
+      <footer className="app-footer">
+        <p>&copy; 2024 Victoria Housing Market Prediction App. All rights reserved.</p>
+      </footer>
 
       {error && <p className="error-message">{error}</p>}
     </div>
