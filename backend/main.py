@@ -14,8 +14,7 @@ app = FastAPI()
 # Add CORS middleware to allow requests from your front-end
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"
-                   ],  # Adjust this to match your front-end URL
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,11 +45,6 @@ class PredictionRequest(BaseModel):
 async def predict_combined(request: PredictionRequest):
     try:
         logging.info(f"Received request data: {request.dict()}")
-
-        # Input validation example
-        if request.Landsize <= 0:
-            raise HTTPException(status_code=400,
-                                detail="Landsize must be positive.")
 
         # Load and process student data
         student_data, student_scaler = preprocess_student_data(STUDENT_PATH)

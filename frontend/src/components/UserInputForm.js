@@ -39,7 +39,7 @@ function UserInputForm({ onSubmit }) {
       return;
     }
     if (!formData.year || parseInt(formData.year) < new Date().getFullYear() || parseInt(formData.year) > new Date().getFullYear() + 100) {
-      setError('Please enter a valid year (up to 100 years from now and not less the current date).');
+      setError('Please enter a valid year (up to 100 years from now and not less than the current date).');
       return;
     }
     if (!/^[0-9]{4}$/.test(formData.postcode)) {
@@ -62,7 +62,7 @@ function UserInputForm({ onSubmit }) {
       };
   
       console.log('Payload being sent:', formattedData);
-      onSubmit(formattedData); // Ensure this call matches the expected back-end request
+      onSubmit(formattedData);
 
       // Clear form on success
       setFormData({
@@ -168,7 +168,11 @@ function UserInputForm({ onSubmit }) {
       <button type="submit" className="submit-button" disabled={isLoading} aria-busy={isLoading} aria-live="assertive">
         {isLoading ? 'Submitting...' : 'Submit'}
       </button>
-      {error && <p className="error-text" style={{ color: 'red' }}>{error}</p>}
+      {error && (
+        <div className="error-text-container">
+          <p className="error-text">{error}</p>
+        </div>
+      )}
     </form>
   );
 }

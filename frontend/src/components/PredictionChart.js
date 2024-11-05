@@ -30,16 +30,44 @@ function PredictionChart({ data }) {
         backgroundColor: 'rgba(75, 192, 192, 0.6)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
+        hoverBackgroundColor: 'rgba(75, 192, 192, 0.8)', // Slightly darker on hover
+        hoverBorderColor: 'rgba(75, 192, 192, 1)',
       },
     ],
   };
 
   const options = {
     responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Predicted Housing Price',
+      },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: function (tooltipItem) {
+            return `Price: $${tooltipItem.raw.toLocaleString()}`; // Format tooltip values with commas
+          },
+        },
+      },
+    },
     scales: {
       y: {
         beginAtZero: true,
+        ticks: {
+          callback: function (value) {
+            return `$${value.toLocaleString()}`; // Adds dollar sign and comma formatting to Y-axis
+          },
+        },
       },
+    },
+    hover: {
+      mode: 'index',
+      intersect: false,
     },
   };
 

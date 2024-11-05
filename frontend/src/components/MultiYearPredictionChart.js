@@ -33,6 +33,7 @@ function MultiYearPredictionChart({ data }) {
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         borderWidth: 2,
         tension: 0.1,
+        pointHoverRadius: 8, // Enlarges points on hover
       },
     ],
   };
@@ -46,6 +47,34 @@ function MultiYearPredictionChart({ data }) {
       title: {
         display: true,
         text: '5-Year Housing Price Prediction',
+      },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: function (tooltipItem) {
+            return `Price: $${tooltipItem.formattedValue.toLocaleString()}`; // Format tooltip values with commas
+          },
+        },
+      },
+    },
+    hover: {
+      mode: 'nearest', // Activates nearest point hover
+      intersect: true,
+    },
+    scales: {
+      y: {
+        beginAtZero: false,
+        ticks: {
+          callback: function (value) {
+            return `$${value.toLocaleString()}`; // Adds dollar sign and comma formatting to Y-axis
+          },
+        },
+      },
+      x: {
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 5, // Limit x-axis labels to improve readability
+        },
       },
     },
   };
