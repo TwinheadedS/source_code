@@ -43,7 +43,7 @@ The request body should contain the following fields as a JSON object:
   "Year": 2025,
   "Type": "h"
 }
-
+```
 
 #### Response
 
@@ -82,7 +82,7 @@ The response includes a JSON object with the predicted single-year housing price
     "r2": 0.85
   }
 }
-
+```
 
 #### Error Responses
 
