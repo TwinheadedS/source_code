@@ -1,4 +1,5 @@
 # (We decided not to use metrics cause metrics does not help people who does not know machine learning understand)
+# (Metrics is still included in the code and documentation)
 
 # Housing Market Prediction API Documentation
 
