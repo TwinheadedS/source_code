@@ -28,20 +28,28 @@ Welcome to the Victoria Housing Market Prediction App! This application predicts
 
 ```
 .
-├── frontend/
-│   └── src/
-│       └── components/
-│       └── App.js
-│       └── index.js
-│   └── public/
-│       └── index.html
-│   └── package.json
 ├── backend/
-│   └── app/
-│       └── main.py
-│       └── models/
-│           └── ai_model.py
-│   └── requirements.txt
+│   ├── main.py                # FastAPI entry point
+│   ├── house_prediction.py     # Prediction logic or ML model integration
+│   ├── data/
+│   │   ├── melb_house_1.csv    # Dataset for housing data
+│   │   └── vic_international_students.csv # Dataset for international students
+│   └── models/
+│       ├── house.pkl           # Serialized model file
+│       └── house_True.pkl      # Another model variant
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── MLTrainingLoader.js
+│   │   │   ├── MultiYearPredictionChart.js
+│   │   │   ├── PredictionChart.js
+│   │   │   ├── StudentPredictionChart.js
+│   │   │   └── UserInputForm.js
+│   │   └── styles/
+│   ├── public/
+│   │   └── index.html
+│   └── package.json
+├── requirements.txt            # Backend dependencies
 └── README.md
 ```
 
@@ -70,10 +78,10 @@ cd backend
 
 2. Install the required libraries:
    ```bash
-   pip install -r requirements.txt
+   pip install -r ../requirements.txt
    ```
 
-3. Make sure the `models/ai_model.py` file is correctly configured and includes the AI model for predictions.
+3. Ensure that `house_prediction.py` is correctly configured to load the machine learning model (e.g., `house.pkl` or `house_True.pkl`).
 
 ### 3. Setting Up the Front-End (React)
 
@@ -92,7 +100,7 @@ cd ../frontend
 
 ### Back-End (Python)
 
-The following libraries are specified in `backend/requirements.txt`:
+The following libraries are specified in `requirements.txt`:
 - **FastAPI**: For creating the REST API.
 - **Uvicorn**: ASGI server for FastAPI.
 - **pandas**, **scikit-learn**: For data processing and machine learning.
@@ -120,25 +128,23 @@ The following libraries are specified in `frontend/package.json`:
 1. Open a new terminal and navigate to the `backend` folder.
 2. Start the FastAPI server:
    ```bash
-   uvicorn app.main:app --reload
+   uvicorn main:app --reload
    ```
 3. The back-end should now be running on `http://localhost:8000`.
 
 ## AI Model Integration
 
-The AI model used for predictions is implemented in the `backend/app/models/ai_model.py` file. Ensure that this file includes:
-- The model file (if pretrained) or code to train and load the model.
-- Functions to process input data and generate predictions.
+The AI model used for predictions is implemented in `house_prediction.py` and saved as `house.pkl`. Ensure this file is loaded correctly for generating predictions.
 
-**Note**: If you’re using a pre-trained model, ensure it’s saved and loaded correctly using libraries such as `pickle` or `joblib`.
+**Note**: If you’re using a pre-trained model, ensure it’s saved and loaded using libraries like `pickle`.
 
 ## Configuration Steps
 
-1. **Model File**: If your model is saved as a `.pkl` file, place it in the `models` directory and load it within `ai_model.py`.
-2. **API Endpoint**: In `backend/app/main.py`, ensure there’s an endpoint that calls the model for predictions. An example endpoint:
+1. **Model File**: Place the `house.pkl` file in the `models` directory and load it within `house_prediction.py`.
+2. **API Endpoint**: In `backend/main.py`, ensure there’s an endpoint that calls the model for predictions. Example:
    ```python
    from fastapi import FastAPI
-   from models.ai_model import predict_price
+   from house_prediction import predict_price
 
    app = FastAPI()
 
