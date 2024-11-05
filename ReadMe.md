@@ -79,7 +79,7 @@ cd backend
 Navigate to the `frontend` folder:
 
 ```bash
-cd ../frontend
+cd frontend
 ```
 
 1. Install the required libraries:
