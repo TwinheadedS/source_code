@@ -50,8 +50,8 @@ Welcome to the Victoria Housing Market Prediction App! This application predicts
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/TwinheadedS/source_code.git
+cd https://github.com/TwinheadedS/source_code.git
 ```
 
 ### 2. Setting Up the Back-End (FastAPI)
@@ -62,18 +62,10 @@ Navigate to the `backend` folder:
 cd backend
 ```
 
-1. Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-2. Install the required libraries:
+1. Install the required libraries:
    ```bash
    pip install -r requirements.txt
    ```
-
-3. Make sure the `models/ai_model.py` file is correctly configured and includes the AI model for predictions.
 
 ### 3. Setting Up the Front-End (React)
 
@@ -154,7 +146,3 @@ The AI model used for predictions is implemented in the `backend/app/models/ai_m
 2. Enter the required details for a housing prediction.
 3. Click **Submit** to receive a price prediction and market forecast.
 4. View the prediction results and forecast on the displayed charts.
-
-## License
-
-This project is licensed under the MIT License.
