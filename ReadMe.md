@@ -22,7 +22,6 @@ Welcome to the Victoria Housing Market Prediction App! This application predicts
 - **Python** (v3.8 or higher)
 - **npm** (comes with Node.js)
 - **pip** (Python package installer)
-- **Virtual Environment** (recommended for Python)
 
 ## Project Structure
 
@@ -58,8 +57,8 @@ Welcome to the Victoria Housing Market Prediction App! This application predicts
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/TwinheadedS/source_code.git
+cd source_code
 ```
 
 ### 2. Setting Up the Back-End (FastAPI)
@@ -70,18 +69,10 @@ Navigate to the `backend` folder:
 cd backend
 ```
 
-1. Create and activate a virtual environment:
+1. Install the required libraries:
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
    ```
-
-2. Install the required libraries:
-   ```bash
-   pip install -r ../requirements.txt
-   ```
-
-3. Ensure that `house_prediction.py` is correctly configured to load the machine learning model (e.g., `house.pkl` or `house_True.pkl`).
 
 ### 3. Setting Up the Front-End (React)
 
@@ -136,9 +127,7 @@ The following libraries are specified in `frontend/package.json`:
 
 The AI model used for predictions is implemented in `house_prediction.py` and saved as `house.pkl`. Ensure this file is loaded correctly for generating predictions.
 
-**Note**: If you’re using a pre-trained model, ensure it’s saved and loaded using libraries like `pickle`.
-
-## Configuration Steps
+## Configuration Steps (Can be skipped if no modifications is needed)
 
 1. **Model File**: Place the `house.pkl` file in the `models` directory and load it within `house_prediction.py`.
 2. **API Endpoint**: In `backend/main.py`, ensure there’s an endpoint that calls the model for predictions. Example:
@@ -160,7 +149,3 @@ The AI model used for predictions is implemented in `house_prediction.py` and sa
 2. Enter the required details for a housing prediction.
 3. Click **Submit** to receive a price prediction and market forecast.
 4. View the prediction results and forecast on the displayed charts.
-
-## License
-
-This project is licensed under the MIT License.
