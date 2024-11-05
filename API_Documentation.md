@@ -1,3 +1,5 @@
+# (We decided not to use metrics cause metrics does not help people who does not know machine learning understand)
+
 # Housing Market Prediction API Documentation
 
 This API is designed to provide housing price predictions and forecast the number of international students based on user input. The API leverages a machine learning model to produce accurate predictions and supports communication between the backend and frontend through JSON data.
