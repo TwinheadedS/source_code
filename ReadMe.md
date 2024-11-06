@@ -74,6 +74,18 @@ cd backend
    pip install -r requirements.txt
    ```
 
+(**In case there is error for setting up / Running the Back-End**) 
+
+2. Install pip if missing
+   ```bash
+   python -m ensurepip --upgrade    
+   ```
+
+3. Run Uvicorn as a module
+   ```bash
+   python -m uvicorn main:app --reload
+   ```
+
 ### 3. Setting Up the Front-End (React)
 
 Navigate to the `frontend` folder:
